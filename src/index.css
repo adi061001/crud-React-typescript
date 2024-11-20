@@ -1,0 +1,13 @@
+.form-1 input {
+    margin: 10px;
+    width: 197px;
+    text-align: center;
+    height: 22px;
+    border: 1px solid black;
+}
+
+.form-1 button {
+    width: 105px;
+    height: 29px;
+    margin: 24px;
+}
