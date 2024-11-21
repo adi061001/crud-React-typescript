@@ -1,94 +1,116 @@
-import React, { ChangeEvent, FormEvent, useState } from "react"
-import { datatype ,datatypeSecond } from "./type"
-import { constants } from "buffer"
+import React, { ChangeEvent, FC, FormEvent, useState } from 'react'
+import { datatype, datatypeSecond } from './type'
+import Todolist from './Component/Todolist'
+// import { constants } from "buffer"
 // import { ChildProcessWithoutNullStreams } from "child_process";
-export default function App() {
-  let [uname, setname] = useState<string>("")
-  let [uphone, setphone] = useState<Number | String>("")
-  let [uemail, setemail] = useState<string>("")
-  let [udepartment, setdep] = useState<string>("")
+export default function App () {
+
+
+
+  let [uname, setname] = useState<string>('')
+  let [uphone, setphone] = useState<Number | String>('')
+  let [uemail, setemail] = useState<string>('')
+  let [udepartment, setdep] = useState<string>('')
   let [todoList, settodolist] = useState<datatype[]>([])
   let [btnshowhide, setshowhide] = useState<boolean>(true)
-  let [validationcheck,setvalid]=useState<datatypeSecond>()
-
+  let [validationcheck, setvalid] = useState<datatypeSecond>()
   let [indexUp, setIndex] = useState<Number>()
+  let [errorMsg ,seterrormsg] =useState<boolean>()
 
+
+
+
+
+// input data
   const userDetails = (event: ChangeEvent<HTMLInputElement>): void => {
-    if (event.target.name === "Urname") {
+    if (event.target.name === 'Urname') {
       setname(event.target.value)
-    } else if (event.target.name === "Uremail") {
+    } else if (event.target.name === 'Uremail') {
       setemail(event.target.value)
-    } else if (event.target.name === "Urphone") {
-        let checklength:Number|string=event.target.value
-        
+    } else if (event.target.name === 'Urphone') {
+      let checklength: Number | string = event.target.value
 
-        
-        if(checklength.length<=10 ){
-            
-            setphone(event.target.value as string | number)
-        }
-       
-    } else if (event.target.name === "Urdepartment") {
+      if (checklength.length <= 10) {
+        setphone(event.target.value as string | number)
+      }
+    } else if (event.target.name === 'Urdepartment') {
       setdep(event.target.value)
     }
   }
 
-  const savedata = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
 
+
+// save button
+  const savedata = (event: FormEvent<HTMLFormElement>) => {
+
+    event.preventDefault()
     let inputDeatils: datatype = {
       name: uname,
       email: uemail,
       Phone: uphone,
-      dep: udepartment, 
+      dep: udepartment
     }
-
+    // update inside save
     if (indexUp == undefined) {
       settodolist([...todoList, inputDeatils])
     } else {
       todoList.splice(Number(indexUp), 1, inputDeatils)
-
+      seterrormsg(false)
+      
+      
       setIndex(undefined)
     }
-
-    setname("")
-    setemail("")
-    setdep("")
-    setphone("")
+    setname('')
+    setemail('')
+    setdep('')
+    setphone('')
     setshowhide(true)
   }
+  // validation 
 
-const deleterow = (index: Number): void => {
-    todoList.splice(Number(index), 1)
+function updateRowChild(data:Number){
+
+   todoList.splice(Number(data), 1)
     settodolist([...todoList])
-  }
-  const updaterow = (data: datatype, index: Number): void => {
-    console.log(index)
 
-    setname(String(data.name))
-    setemail(data.email)
-    setdep(data.dep)
-    setphone(Number(data.Phone))
+}
+const updatedata=(data:datatype,index:Number)=>{
+        setname(String(data.name))
+        setemail(data.email)
+        setdep(data.dep)
+        setphone(Number(data.Phone))
+        setshowhide(false)
+        setIndex(index)
+        seterrormsg(true)
 
-    setshowhide(false)
-    setIndex(index)
-  }
-  const checkEmail=(event: ChangeEvent<HTMLInputElement>)=>{
-    const checkEmailVal=event.target.value
-    let statusEmailVal=todoList.some(ob=>ob.email==checkEmailVal)
 
-    if(statusEmailVal){
-        setvalid({emailval:true}) 
+        
+
+}
+
+
+const checkEmail = (event: ChangeEvent<HTMLInputElement>) => {
+  
+  const checkEmailVal = event.target.value
+  console.log(checkEmailVal)
+  let statusEmailVal = todoList.some(ob => ob.email == checkEmailVal)
+  console.log(statusEmailVal)
+  
+  if (statusEmailVal  ) {
+    if(errorMsg){
+      setvalid({ emailval: false })
     }
-
-   
-
-
+    else{
+    setvalid({ emailval: true })}
   }
-  const checkEmailSecond=()=>{
-    setvalid({emailval:false}) 
+}
+const checkEmailSecond = () => {
+  setvalid({ emailval: false })
+}
 
-  }
+
+
+
 
 
   return (
@@ -97,53 +119,56 @@ const deleterow = (index: Number): void => {
         <h1>TodoList</h1>
       </center>
       <center>
-        <form className="form-1" onSubmit={savedata}>
+        <form className='form-1' onSubmit={savedata}>
           <input
-            type="text"
-            placeholder="Enter your name "
-            name="Urname"
+            type='text'
+            placeholder='Enter your name '
+            name='Urname'
             value={uname}
-            onChange={(event) => userDetails(event)}
+            onChange={event => userDetails(event)}
             required
           ></input>
           <input
-            type="email"
-            placeholder="Enter your email id"
-            name="Uremail"
+            type='email'
+            placeholder='Enter your email id'
+            name='Uremail'
             value={uemail}
             onChange={userDetails}
             required
-            onBlur={checkEmail} 
+            onBlur={checkEmail}
             onFocus={checkEmailSecond}
           ></input>
           <input
-            type="number"
-            placeholder="Enter your phone number "
-            name="Urphone"
+            type='number'
+            placeholder='Enter your phone number '
+            name='Urphone'
             value={String(uphone)}
             onChange={userDetails}
             required
           ></input>
           <input
-            type="text"
-            placeholder="Enter your department"
-            name="Urdepartment"
+            type='text'
+            placeholder='Enter your department'
+            name='Urdepartment'
             value={udepartment}
             onChange={userDetails}
             required
           ></input>
           <br></br>
+          {}
           {btnshowhide ? (
-            <button>Save</button>
+            <button {errorMsg?disabled:""}  >Save</button>
           ) : (
-            <button name="upBtn">Update</button>
+            <button name='upBtn'>Update</button>
           )}
-    <p style={{fontStyle:"italic",color:"red"}}>{validationcheck?.emailval?"The Email is aleredy persent !":" "}</p>
-    <p></p>
+          <p className='hideEdit' style={{ fontStyle: 'italic', color: 'red' }}>
+            {validationcheck?.emailval ? 'The Email is aleredy persent !' : ' '}
+          </p>
+          <p></p>
         </form>
       </center>
       <hr></hr>
-      <table border={1} style={{ width: "100%" }}>
+      <table border={1} style={{ width: '100%' }}>
         <thead>
           <tr>
             <th>Name</th>
@@ -157,18 +182,7 @@ const deleterow = (index: Number): void => {
         <tbody>
           {todoList.map((data: datatype, index: number) => {
             return (
-              <tr style={{ textAlign: "center" }} key={index}>
-                <td>{data.name}</td>
-                <td>{data.email}</td>
-                <td>{String(data.Phone)}</td>
-                <td>{data.dep}</td>
-                <td onClick={() => updaterow(data, index)}>
-                  <i className="fa-solid fa-pen-to-square"></i>
-                </td>
-                <td onClick={() => deleterow(index)}>
-                  <i className="fa-solid fa-trash"></i>
-                </td>
-              </tr>
+            <Todolist key={index} data={data} index={index}  todolist={todoList} updateRowChild={updateRowChild}  updatedata={updatedata}></Todolist> 
             )
           })}
         </tbody>
