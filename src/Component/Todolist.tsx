@@ -16,8 +16,6 @@ export default function Todolist({
   updateRowChild,
   updatedata,
 }: props) {
-      
-
   // delete icon
   const deleterow = (index: Number): void => {
     updateRowChild(index)
@@ -30,7 +28,6 @@ export default function Todolist({
 
   return (
     <>
-    
       <tr style={{ textAlign: "center" }}>
         <td>{data.name}</td>
         <td>{data.email}</td>
